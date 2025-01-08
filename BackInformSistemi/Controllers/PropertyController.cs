@@ -20,7 +20,7 @@ namespace BackInformSistemi.Controllers
             this.mapper = mapper;
             this.context = context;
         }
-        [HttpGet("list/{sellRent}")]
+        [HttpGet("list/{sellRentt}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetPropertyList(int sellRent)
         {
