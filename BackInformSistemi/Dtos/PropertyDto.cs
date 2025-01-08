@@ -28,6 +28,7 @@ namespace BackInformSistemi.Dtos
         public string Description { get; set; }
 
         public int PostedBy { get; set; }
+        public IFormFile Image { get; set; }
 
     }
 }

@@ -4,6 +4,7 @@ using BackInformSistemi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackInformSistemi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250105121155_UpdatePregovorModel")]
+    partial class UpdatePregovorModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,6 +144,8 @@ namespace BackInformSistemi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("propertyId");
+
                     b.ToTable("Pregovori");
                 });
 
@@ -190,10 +195,6 @@ namespace BackInformSistemi.Migrations
 
                     b.Property<bool>("Gated")
                         .HasColumnType("bit");
-
-                    b.Property<string>("ImagePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LastUpdateBy")
                         .HasColumnType("int");
@@ -351,6 +352,17 @@ namespace BackInformSistemi.Migrations
                     b.HasOne("BackInformSistemi.Models.Property", "Property")
                         .WithMany("Photos")
                         .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("BackInformSistemi.Models.Pregovor", b =>
+                {
+                    b.HasOne("BackInformSistemi.Models.Property", "Property")
+                        .WithMany()
+                        .HasForeignKey("propertyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

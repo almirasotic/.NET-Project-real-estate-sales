@@ -8,6 +8,7 @@
 
         IFurnishingTypeRepository FurnishingTypeRepository { get; }
         IPropertyTypeRepository PropertyTypeRepository { get; }
+        ISalesRepository SalesRepository { get; }
         Task<bool> SaveAsync();
     }
 }

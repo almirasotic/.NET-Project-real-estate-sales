@@ -42,5 +42,7 @@ namespace BackInformSistemi.Models
         public int PostedBy { get; set; }
            public int LastUpdateBy { get; set; } // Dodato
     public DateTime LastUpdateOn { get; set; } // Dodato
+        public string ImagePath { get; set; }
+
     }
 }

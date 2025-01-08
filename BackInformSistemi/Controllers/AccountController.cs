@@ -1,8 +1,11 @@
-﻿using BackInformSistemi.Dtos;
+﻿using BackInformSistemi.Data;
+using BackInformSistemi.Dtos;
 using BackInformSistemi.Interfaces;
 using BackInformSistemi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -14,11 +17,13 @@ namespace BackInformSistemi.Controllers
     {
         private readonly IUnitOfWork uow;
         private readonly IConfiguration configuration;
+        private readonly DataContext context;
 
-        public AccountController(IUnitOfWork uow, IConfiguration configuration)
+        public AccountController(IUnitOfWork uow, IConfiguration configuration, DataContext context)
         {
             this.uow = uow;
             this.configuration = configuration;
+            this.context = context;
         }
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -38,7 +43,7 @@ namespace BackInformSistemi.Controllers
             loginRes.UserName = loginReq.UserName;
             loginRes.Token = CreateJWT(user);
             loginRes.role = user.role;
-
+            loginRes.Id = user.Id;
             return Ok(loginRes);
         }
         [HttpPost("register")]
@@ -97,6 +102,31 @@ namespace BackInformSistemi.Controllers
             await uow.UserRepository.DemoteToBuyer(userId);
             return Ok();
         }
+        [HttpDelete("deleteUser/{userId}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] int userId)
+        {
+            var user = await uow.UserRepository.GetUserById(userId);
+            if (user == null)
+            {
+                return NotFound($"User with ID {userId} not found.");
+            }
+
+            uow.UserRepository.DeleteUser(user);
+            await uow.SaveAsync();
+
+            return Ok($"User with ID {userId} has been deleted.");
+        }
+
+        [HttpGet("agents")]
+        public IActionResult GetAgents()
+        {
+            // Pretpostavimo da je "Agent" povezan sa `role = 2`
+            var agents = context.Users.Where(u => u.role == 2).ToList();
+            return Ok(agents);
+        }
+       
+
+
 
     }
 }

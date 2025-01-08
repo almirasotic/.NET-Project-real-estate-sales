@@ -22,5 +22,6 @@ namespace BackInformSistemi.Dtos
         public bool ReadyToMove { get; set; }
         public DateTime EstPossessionOn { get; set; }
         public User User { get; set; }
+        public string ImagePath { get; set; }
     }
 }

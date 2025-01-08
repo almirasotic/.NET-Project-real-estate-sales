@@ -28,5 +28,7 @@ namespace BackInformSistemi.Data
 
         public IFurnishingTypeRepository FurnishingTypeRepository => 
             new FurnishingTypeRepository(dc);
+
+        public ISalesRepository SalesRepository => new SalesRepository(dc);
     }
 }

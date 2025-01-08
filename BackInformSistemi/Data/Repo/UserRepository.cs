@@ -132,5 +132,18 @@ namespace BackInformSistemi.Data.Repo
         {
             return await dc.Users.ToListAsync();
         }
+
+
+
+
+        public async Task<User?> GetUserById(int userId)
+        {
+            return await dc.Users.FindAsync(userId);
+        }
+        public void DeleteUser(User user)
+        {
+            dc.Users.Remove(user);
+        }
+
     }
 }

@@ -12,7 +12,9 @@ namespace BackInformSistemi.Interfaces
         Task<bool> UpdateToAdministrator(int id);
         Task<bool> UpdateToAgent(int id);
         Task<bool> DemoteToBuyer(int id);
-
+        // Nove metode
+        Task<User?> GetUserById(int userId);
+        void DeleteUser(User user);
 
     }
 }

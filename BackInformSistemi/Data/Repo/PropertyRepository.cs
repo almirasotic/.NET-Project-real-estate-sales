@@ -8,10 +8,11 @@ namespace BackInformSistemi.Data.Repo
     {
         private readonly DataContext dc;
 
-        public PropertyRepository(DataContext dc )
+        public PropertyRepository(DataContext dc)
         {
             this.dc = dc;
         }
+
         public async Task<bool> AddProperty(Property property)
         {
             dc.Properties.Add(property);
@@ -19,35 +20,57 @@ namespace BackInformSistemi.Data.Repo
             return true;
         }
 
-        public void DeleteProperty(int id)
+        public void Delete(Property property)
         {
-            throw new NotImplementedException();
+            dc.Properties.Remove(property);
         }
 
         public async Task<IEnumerable<Property>> GetPropertiesAsync(int sellRent)
         {
-            var properties = await dc.Properties
+            return await dc.Properties
                 .Include(p => p.PropertyType)
-
                 .Include(p => p.City)
-
                 .Include(p => p.FurnishingType)
-                .Where(p => p.SellRent == sellRent).Include( p => p.User)
+                .Include(p => p.User)
+                .Where(p => p.SellRent == sellRent)
                 .ToListAsync();
-            return properties;
         }
 
         public async Task<Property> GetPropertyDetailAsync(int id)
         {
-            var properties = await dc.Properties
-                 .Include(p => p.PropertyType)
-
-                 .Include(p => p.City)
-
-                 .Include(p => p.FurnishingType)
-                 .Where(p => p.Id == id).Include(p => p.User)
-                  .FirstOrDefaultAsync();
-            return properties;
+            return await dc.Properties
+                .Include(p => p.PropertyType)
+                .Include(p => p.City)
+                .Include(p => p.FurnishingType)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
+
+        public async Task<Property> GetPropertyByIdAsync(int id)
+        {
+            return await dc.Properties
+                .Include(p => p.PropertyType)
+                .Include(p => p.City)
+                .Include(p => p.FurnishingType)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public  void DeleteProperty(int id)
+        {
+            var property = dc.Properties.Find(id);
+            if (property != null)
+            {
+                List<Sale> sales = dc.Sales.Where(s => s.propertyId == property.Id).ToList();
+                dc.Sales.RemoveRange(sales);
+                dc.Properties.Remove(property);
+                dc.SaveChanges();
+            }
+            else
+            {
+                throw new Exception($"Property with ID {id} not found."); // Dodajte informativnu grešku
+            }
+        }
+
     }
 }
